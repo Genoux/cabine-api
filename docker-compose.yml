@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  office-control:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    # network_mode: "host"
+    volumes:
+      - ./logs:/app/logs
