@@ -3,8 +3,7 @@ import { wolService, lifxService } from '../services/index.js';
 import logger from '../utils/logger.js';
 import { config } from '../config.js';
 
-// Simple authentication middleware function
-export const authenticateWebhook = (req: Request, res: Response, next: Function) => {
+export const authenticateWebhook = (req: Request, res: Response, next: (err?: Error) => void) => {
   const secret = req.headers['x-webhook-secret'];
 
   if (secret !== config.security.webhookSecret) {
@@ -27,15 +26,8 @@ export const authenticateWebhook = (req: Request, res: Response, next: Function)
 };
 
 export class WebhookController {
-  /**
-   * Wake up the PC and verify it comes online
-   */
-  /**
-   * Wake up the PC and verify it comes online
-   */
   public async wakePC(req: Request, res: Response): Promise<Response> {
     try {
-      // First check if PC is already online
       const isAlreadyOnline = await wolService.isPCOnline();
       if (isAlreadyOnline) {
         return res.status(200).json({
@@ -45,9 +37,7 @@ export class WebhookController {
         });
       }
 
-      // If user doesn't want to wait for verification
       if (req.query.verify === 'false') {
-        // Just send the packet and return immediately
         await wolService.sendWolPacket();
         return res.status(202).json({
           success: true,
@@ -56,10 +46,8 @@ export class WebhookController {
         });
       }
 
-      // Set maximum wait time (default 1 minute, can be customized)
       const maxWaitTime = req.body.maxWaitTime ? parseInt(req.body.maxWaitTime) : 60000;
 
-      // Wake PC and wait for it to come online
       logger.info(`Waking PC with verification (max wait time: ${maxWaitTime}ms)`);
       const result = await wolService.wakePC(maxWaitTime);
 
@@ -92,9 +80,6 @@ export class WebhookController {
     }
   }
 
-  /**
-   * Control a specific light
-   */
   public async controlLight(req: Request, res: Response): Promise<Response> {
     const lightName = req.params.name;
     const action = req.params.action;

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
-import { webhookRoutes } from './routes/index.js';
+import { webhookRoutes, statusRoutes } from './routes/index.js';
 import logger from './utils/logger.js';
 
 const app: express.Application = express();
@@ -25,12 +25,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/webhooks', webhookRoutes);
-
+app.use('/status', statusRoutes);
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response) => {
   logger.error({ error: err }, 'Unhandled error');
   res.status(500).json({
     success: false,
@@ -48,6 +48,7 @@ const server = app.listen(config.server.port, config.server.host, () => {
   logger.info(`- GET /webhooks/light/status`);
   logger.info(`- POST /webhooks/office/arrive`);
   logger.info(`- POST /webhooks/office/leave`);
+  logger.info(`- GET /status`);
 });
 
 const shutdown = () => {

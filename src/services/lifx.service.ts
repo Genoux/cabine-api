@@ -312,7 +312,7 @@ export class LifxService {
   /**
    * Get the state of a light by ID
    */
-  public async getLightStateById(lightId: string): Promise<any> {
+  public async getLightStateById(lightId: string): Promise<LightState | null> {
     try {
       const url = `${this.baseUrl}/${lightId}`;
 
@@ -338,7 +338,7 @@ export class LifxService {
   /**
    * Get the state of a light by name
    */
-  public async getLightState(lightName: string): Promise<any> {
+  public async getLightState(lightName: string): Promise<LightState | null> {
     const light = this.getLight(lightName);
 
     if (!light) {
@@ -352,8 +352,8 @@ export class LifxService {
   /**
    * Get the states of all lights
    */
-  public async getAllLightStates(): Promise<{ [key: string]: any }> {
-    const results: { [key: string]: any } = {};
+  public async getAllLightStates(): Promise<{ [key: string]: LightState | null }> {
+    const results: { [key: string]: LightState | null } = {};
     const promises: Promise<void>[] = [];
 
     this.getAllLights().forEach((light) => {
@@ -371,8 +371,8 @@ export class LifxService {
   /**
    * Get the states of lights in a group
    */
-  public async getGroupLightStates(groupName: string): Promise<{ [key: string]: any }> {
-    const results: { [key: string]: any } = {};
+  public async getGroupLightStates(groupName: string): Promise<{ [key: string]: LightState | null }> {
+    const results: { [key: string]: LightState | null } = {};
     const promises: Promise<void>[] = [];
 
     this.getLightsByGroup(groupName).forEach((light) => {
