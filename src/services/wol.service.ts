@@ -36,7 +36,7 @@ export class WolService {
    */
   public async sendWolPacket(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      logger.info(`Sending WOL packet to ${this.macAddress}`);
+      logger.info(`Sending WOL packet to ${this.macAddress} via ${this.ipAddress}:${this.port}`);
       wol.wake(
         this.macAddress,
         {
@@ -45,7 +45,7 @@ export class WolService {
         },
         (error: Error | null) => {
           if (error) {
-            logger.error({ error }, 'Failed to send WOL packet');
+            logger.error({ error, macAddress: this.macAddress }, 'Failed to send WOL packet');
             reject(error);
             return;
           }

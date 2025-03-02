@@ -5,7 +5,6 @@ const router = Router();
 
 router.use(authenticateWebhook);
 
-router.post('/wake-pc', webhookController.wakePC);
 router.post('/light/:name/:action', webhookController.controlLight);
 router.get('/light/:name', webhookController.getLightState);
 

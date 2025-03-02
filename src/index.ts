@@ -43,6 +43,7 @@ const server = app.listen(config.server.port, config.server.host, () => {
   logger.info(`Server running at http://${config.server.host}:${config.server.port}`);
   logger.info('Available webhook endpoints:');
   logger.info(`- POST /webhooks/wake-pc`);
+  logger.info(`- POST /webhooks/sleep-pc`);
   logger.info(`- POST /webhooks/light/on`);
   logger.info(`- POST /webhooks/light/off`);
   logger.info(`- GET /webhooks/light/status`);
