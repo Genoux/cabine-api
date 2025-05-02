@@ -26,8 +26,21 @@ app.use((req, res, next) => {
 // Routes
 app.use('/webhooks', webhookRoutes);
 app.use('/status', statusRoutes);
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'Server is running',
+    endpoints: [
+      '/webhooks/wake-pc',
+      '/webhooks/sleep-pc',
+      '/webhooks/light/on',
+      '/webhooks/light/off',
+      '/webhooks/light/status',
+      '/webhooks/office/arrive',
+      '/webhooks/office/leave',
+      '/status',
+    ],
+  });
 });
 
 app.use((err: Error, req: express.Request, res: express.Response) => {
@@ -42,14 +55,14 @@ app.use((err: Error, req: express.Request, res: express.Response) => {
 const server = app.listen(config.server.port, config.server.host, () => {
   logger.info(`Server running at http://${config.server.host}:${config.server.port}`);
   logger.info('Available webhook endpoints:');
-  logger.info(`- POST /webhooks/wake-pc`);
-  logger.info(`- POST /webhooks/sleep-pc`);
-  logger.info(`- POST /webhooks/light/on`);
-  logger.info(`- POST /webhooks/light/off`);
-  logger.info(`- GET /webhooks/light/status`);
-  logger.info(`- POST /webhooks/office/arrive`);
-  logger.info(`- POST /webhooks/office/leave`);
-  logger.info(`- GET /status`);
+  logger.info('- POST /webhooks/wake-pc');
+  logger.info('- POST /webhooks/sleep-pc');
+  logger.info('- POST /webhooks/light/on');
+  logger.info('- POST /webhooks/light/off');
+  logger.info('- GET /webhooks/light/status');
+  logger.info('- POST /webhooks/office/arrive');
+  logger.info('- POST /webhooks/office/leave');
+  logger.info('- GET /status');
 });
 
 const shutdown = () => {
