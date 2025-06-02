@@ -5,6 +5,7 @@ services:
     build:
       context: ./cabine-api
       dockerfile: Dockerfile
+    image: cabine-api:v1
     container_name: cabine_api
     restart: unless-stopped
     ports:
