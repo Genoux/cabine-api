@@ -1,5 +1,5 @@
 {
-  "name": "office-control",
+  "name": "cabine-api",
   "version": "1.0.0",
   "description": "Office automation system for PC wake/sleep and LIFX lights",
   "type": "module",

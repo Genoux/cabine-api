@@ -10,6 +10,12 @@ services:
       - '3000:3000'
     env_file:
       - .env
-    network_mode: "host"
     volumes:
       - ./logs:/app/logs
+      - ./keys:/app/keys:ro
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
