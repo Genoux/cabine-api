@@ -1,18 +1,19 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  office-control:
+  cabine-api:
     build:
-      context: .
+      context: ./cabine-api
       dockerfile: Dockerfile
+    container_name: cabine_api
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - 3002:3000
     env_file:
-      - .env
+      - ./cabine-api/.env
     volumes:
-      - ./logs:/app/logs
-      - ./keys:/app/keys:ro
+      - ./cabine-api/logs:/app/logs
+      - ./cabine-api/keys:/app/keys:ro
     networks:
       - default
 

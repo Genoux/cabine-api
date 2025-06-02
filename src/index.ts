@@ -53,12 +53,12 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 const server = app.listen(config.server.port, config.server.host, () => {
   logger.info(`Office Control System running at http://${config.server.host}:${config.server.port}`);
   logger.info('Available webhook endpoints:');
-  logger.info('- POST /webhooks/arrive (wake PC + turn on lights)');
-  logger.info('- POST /webhooks/leave (sleep PC + turn off lights)');
-  logger.info('- POST /webhooks/wake-pc');
-  logger.info('- POST /webhooks/sleep-pc');
-  logger.info('- POST /webhooks/lights-on');
-  logger.info('- POST /webhooks/lights-off');
+  logger.info('- POST /api/arrive (wake PC + turn on lights)');
+  logger.info('- POST /api/leave (sleep PC + turn off lights)');
+  logger.info('- POST /api/wake-pc');
+  logger.info('- POST /api/sleep-pc');
+  logger.info('- POST /api/lights-on');
+  logger.info('- POST /api/lights-off');
   logger.info('- GET /status');
 });
 
