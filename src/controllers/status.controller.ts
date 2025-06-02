@@ -12,7 +12,7 @@ export class StatusController {
       console.log(isPCOnline);
       return res.status(200).json({
         success: true,
-        system: 'Office Control System - Simplified & Clean',
+        system: 'Cabine Control System',
         pc: {
           macAddress: config.pc.macAddress,
           ipAddress: config.pc.ipAddress,
