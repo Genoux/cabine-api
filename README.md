@@ -1,89 +1,51 @@
 # Office Control System
 
-Controls my office PC (wake-on-LAN) and LIFX lights.
+Node.js service for controlling home office setup via webhooks.
 
-## Quick Start
+## What It Does
 
-1. Create `.env` file from example:
+**PC Control:**
 
-   ```
-   cp .env.example .env
-   ```
+- Wake up Arch Linux PC via Wake-on-LAN
+- Put PC to sleep via SSH commands
+- Real-time status polling to confirm actions worked
 
-2. Edit `.env` with:
+**Light Control:**
 
-   - WOL_MAC_ADDRESS: My work PC's MAC
-   - LIFX_API_TOKEN: My LIFX token
-   - LIFX_LIGHTS: JSON array of my LIFX lights
+- Turn all LIFX lights on/off via API
+- All-or-nothing control
 
-3. Run with Docker:
-   ```
-   docker-compose up -d
-   ```
+**Bundle Actions:**
 
-## Useful Commands
+- **Arrive**: Wake PC + turn on lights
+- **Leave**: Sleep PC + turn off lights
 
-### Wake PC
+## Architecture
 
-```
-curl -X POST http://localhost:3000/webhooks/wake-pc -H "X-Webhook-Secret: my-secret"
-```
+**Separation of concerns:**
 
-### Light Controls
+- `pc.service.ts` - Handles WOL, SSH commands, and status polling
+- `lifx.service.ts` - Manages LIFX API calls
+- `webhook.controller.ts` - HTTP request/response handling only
+- `routes/` - Endpoint definitions
 
-```
-# Turn on desk light
-curl -X POST http://localhost:3000/webhooks/light/desk/on -H "X-Webhook-Secret: my-secret"
+## Tech Stack
 
-# Turn off all office lights
-curl -X POST http://localhost:3000/webhooks/group/office/off -H "X-Webhook-Secret: my-secret"
+- **Node.js + TypeScript** - Type-safe code
+- **Express** - HTTP server
+- **SSH2** - PC communication
+- **WOL** - Wake-on-LAN packets
+- **LIFX API** - Light control
+- **Pino** - Structured logging
 
-# Activate focus scene
-curl -X POST http://localhost:3000/webhooks/scene/focus -H "X-Webhook-Secret: my-secret"
-```
+## Endpoints
 
-### Office Automation
+- `POST /api/arrive` - Office arrival sequence
+- `POST /api/leave` - Office departure sequence
+- `POST /api/wake-pc` - Wake PC only
+- `POST /api/sleep-pc` - Sleep PC only
+- `POST /api/lights-on` - Lights on only
+- `POST /api/lights-off` - Lights off only
+- `GET /status` - Get system status
 
-```
-# Arriving at office (wake PC + turn on lights)
-curl -X POST http://localhost:3000/webhooks/office/arrive -H "X-Webhook-Secret: my-secret"
-
-# Leaving office (turn off lights)
-curl -X POST http://localhost:3000/webhooks/office/leave -H "X-Webhook-Secret: my-secret"
-```
-
-## Arduino Integration
-
-Add this to the RFID sketch to trigger office arrival:
-
-```cpp
-void sendWebhookRequest() {
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    http.begin("http://server-ip:3000/webhooks/office/arrive");
-    http.addHeader("Content-Type", "application/json");
-    http.addHeader("X-Webhook-Secret", "my-secret");
-
-    int httpResponseCode = http.POST("{}");
-
-    if (httpResponseCode > 0) {
-      Serial.println("Office arrival triggered");
-    } else {
-      Serial.println("Error: " + String(httpResponseCode));
-    }
-
-    http.end();
-  }
-}
-```
-
-## To Add a New Light
-
-Add it to the LIFX_LIGHTS array in .env file:
-
-```
-LIFX_LIGHTS='[
-  {"id":"existing-id", "name":"desk", "group":"office", "tags":["work"]},
-  {"id":"new-light-id", "name":"new_light", "group":"bedroom", "tags":["sleep"]}
-]'
-```
+Office automation system.

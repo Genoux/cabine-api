@@ -1,2 +1,2 @@
-export * from './wol.service.js';
-export * from './lifx.service.js';
+export { lifxService } from './lifx.service.js';
+export { pcControlService } from './pc.service.js';

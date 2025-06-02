@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   logger.debug(
     {
       method: req.method,
@@ -23,27 +23,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/webhooks', webhookRoutes);
+app.use('/api', webhookRoutes);
 app.use('/status', statusRoutes);
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.status(200).json({
     status: 'ok',
-    message: 'Server is running',
+    message: 'Office Control System',
     endpoints: [
-      '/webhooks/wake-pc',
-      '/webhooks/sleep-pc',
-      '/webhooks/light/on',
-      '/webhooks/light/off',
-      '/webhooks/light/status',
-      '/webhooks/office/arrive',
-      '/webhooks/office/leave',
+      '/api/arrive',
+      '/api/leave',
+      '/api/wake-pc',
+      '/api/sleep-pc',
+      '/api/lights-on',
+      '/api/lights-off',
       '/status',
     ],
   });
 });
 
-app.use((err: Error, req: express.Request, res: express.Response) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   logger.error({ error: err }, 'Unhandled error');
   res.status(500).json({
     success: false,
@@ -53,15 +51,14 @@ app.use((err: Error, req: express.Request, res: express.Response) => {
 });
 
 const server = app.listen(config.server.port, config.server.host, () => {
-  logger.info(`Server running at http://${config.server.host}:${config.server.port}`);
+  logger.info(`Office Control System running at http://${config.server.host}:${config.server.port}`);
   logger.info('Available webhook endpoints:');
+  logger.info('- POST /webhooks/arrive (wake PC + turn on lights)');
+  logger.info('- POST /webhooks/leave (sleep PC + turn off lights)');
   logger.info('- POST /webhooks/wake-pc');
   logger.info('- POST /webhooks/sleep-pc');
-  logger.info('- POST /webhooks/light/on');
-  logger.info('- POST /webhooks/light/off');
-  logger.info('- GET /webhooks/light/status');
-  logger.info('- POST /webhooks/office/arrive');
-  logger.info('- POST /webhooks/office/leave');
+  logger.info('- POST /webhooks/lights-on');
+  logger.info('- POST /webhooks/lights-off');
   logger.info('- GET /status');
 });
 

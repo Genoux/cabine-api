@@ -1,7 +1,6 @@
 // src/routes/status.routes.ts
 import { Router } from 'express';
-import { statusController } from '../controllers/status.controller.js';
-import { authenticateWebhook } from '../controllers/webhook.controller.js';
+import { statusController, authenticateWebhook } from '../controllers/index.js';
 
 const router = Router();
 

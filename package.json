@@ -1,7 +1,7 @@
 {
-  "name": "john-cabine",
+  "name": "office-control",
   "version": "1.0.0",
-  "description": "Office Control System with webhooks for PC wake and smart devices",
+  "description": "Office automation system for PC wake/sleep and LIFX lights",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -17,8 +17,8 @@
     "wol",
     "wake-on-lan",
     "lifx",
-    "smart-office",
-    "automation"
+    "office-automation",
+    "arch-linux"
   ],
   "author": "",
   "license": "",
@@ -48,5 +48,6 @@
     "prettier": "^3.5.2",
     "tsx": "^4.5.0",
     "typescript": "^5.3.2"
-  }
+  },
+  "packageManager": "pnpm@9.15.4+sha1.ffa0b5c573381e8035b354028ccff97c8e452047"
 }

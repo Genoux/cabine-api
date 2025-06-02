@@ -1,58 +1,40 @@
 import { Request, Response } from 'express';
-import { wolService, lifxService } from '../services/index.js';
+import { pcControlService } from '../services/index.js';
 import { config } from '../config.js';
 
 export class StatusController {
   /**
    * Get overall system status
    */
-  public async getStatus(req: Request, res: Response): Promise<Response> {
+  public async getStatus(_req: Request, res: Response): Promise<Response> {
     try {
-      const isPCOnline = await wolService.isPCOnline();
-
-      const lights = lifxService.getAllLights();
-
-      const lightsStatus: Record<string, {
-        online: boolean;
-        power: 'on' | 'off';
-      }> = {};
-
-      for (const light of lights) {
-        try {
-          const state = await lifxService.getLightState(light.name);
-
-          if (state && Array.isArray(state) && state.length > 0) {
-            lightsStatus[light.name] = {
-              online: state[0].connected,
-              power: state[0].power
-            };
-          } else {
-            lightsStatus[light.name] = {
-              online: false,
-              power: 'off'
-            };
-          }
-        } catch (error) {
-          lightsStatus[light.name] = {
-            online: false,
-            power: 'off'
-          };
-        }
-      }
-
+      const isPCOnline = await pcControlService.isPCOnline();
+      console.log(isPCOnline);
       return res.status(200).json({
         success: true,
-        pcStatus: {
-          ip: config.wol.pcIp,
-          online: isPCOnline
+        system: 'Office Control System - Simplified & Clean',
+        pc: {
+          macAddress: config.pc.macAddress,
+          ipAddress: config.pc.ipAddress,
+          online: isPCOnline,
         },
-        lightsStatus: lightsStatus
+        lifx: {
+          configured: !!config.lifx.apiToken,
+        },
+        endpoints: [
+          '/webhooks/arrive',
+          '/webhooks/leave', 
+          '/webhooks/wake-pc',
+          '/webhooks/sleep-pc',
+          '/webhooks/lights-on',
+          '/webhooks/lights-off',
+        ],
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
         message: 'Failed to get system status',
-        error: (error as Error).message
+        error: (error as Error).message,
       });
     }
   }
